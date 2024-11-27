@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useAnimationFrame } from '../../hooks/useAnimationFrame';
 import { Particle, ParticleConfig } from '../../types/particle';
-import { createParticle, updateParticle } from '../../utils/particle';
+import { createParticle, updateParticle, drawParticle } from '../../utils/particle';
 import { hexToRgba } from '../../utils/color';
 
 interface ParticleSystemProps {
@@ -12,6 +12,20 @@ export function ParticleSystem({ config }: ParticleSystemProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particles = useRef<Particle[]>([]);
   const isMouseDown = useRef(false);
+
+  // Create initial particles on mount
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    for (let i = 0; i < config.particleCount; i++) {
+      particles.current.push(createParticle(centerX, centerY, config));
+    }
+  }, [config]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -24,13 +38,21 @@ export function ParticleSystem({ config }: ParticleSystemProps) {
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < config.particleCount; i++) {
         particles.current.push(createParticle(x, y, config));
       }
     };
 
-    const handleMouseDown = () => {
+    const handleMouseDown = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
       isMouseDown.current = true;
+      
+      for (let i = 0; i < config.particleCount; i++) {
+        particles.current.push(createParticle(x, y, config));
+      }
     };
 
     const handleMouseUp = () => {
@@ -57,33 +79,31 @@ export function ParticleSystem({ config }: ParticleSystemProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = canvas.clientWidth;
-    canvas.height = canvas.clientHeight;
+    // Set canvas size to match window size
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (!config.trail) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    } else {
+      ctx.fillStyle = 'rgba(17, 24, 39, 0.1)'; // Fade effect for trails
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
 
     particles.current = particles.current
       .filter((p) => p.life > 0)
-      .map(updateParticle);
+      .map(particle => updateParticle(particle, config));
 
-    particles.current.forEach((p) => {
-      ctx.fillStyle = hexToRgba(config.color, p.life);
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fill();
+    particles.current.forEach((particle) => {
+      drawParticle(ctx, particle, config);
     });
   });
 
   return (
-    <div className="relative">
-      <canvas
-        ref={canvasRef}
-        className="w-full h-full bg-gray-900 rounded-lg cursor-crosshair"
-        style={{ touchAction: 'none' }}
-      />
-      <div className="absolute bottom-4 left-4 text-sm text-gray-400">
-        Click and drag to create particles
-      </div>
-    </div>
+    <canvas
+      ref={canvasRef}
+      className="fixed inset-0 w-full h-full bg-gray-900 cursor-crosshair"
+      style={{ touchAction: 'none' }}
+    />
   );
 }

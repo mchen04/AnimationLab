@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Header } from './components/layout/Header';
 import { GlobalParticleSystem } from './components/animations/GlobalParticleSystem';
 import { AnimationControls } from './components/controls/AnimationControls';
@@ -23,25 +23,32 @@ export default function App() {
     glow: true,
   });
 
+  const headerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const headerRect = headerRef.current?.getBoundingClientRect();
+    if (headerRect) {
+      console.log('Header dimensions:', headerRect);
+    }
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      <GlobalParticleSystem config={config} />
-      
-      <div className="relative z-10">
+    <div className="min-h-screen bg-gray-900 text-white overflow-hidden">
+      <div ref={headerRef} className="fixed top-0 left-0 right-0 z-50">
         <Header />
-        
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            <div className="lg:col-span-3" />
-            
-            <div className="controls-area">
-              <AnimationControls
-                config={config}
-                onConfigChange={setConfig}
-              />
-            </div>
-          </div>
-        </main>
+      </div>
+      
+      <div className="fixed inset-0 z-0">
+        <GlobalParticleSystem config={config} headerRef={headerRef} />
+      </div>
+      
+      <div className="fixed top-20 right-8 z-50 w-96">
+        <div className="bg-gray-900 bg-opacity-95 rounded-lg shadow-xl border border-gray-800">
+          <AnimationControls
+            config={config}
+            onConfigChange={setConfig}
+          />
+        </div>
       </div>
     </div>
   );

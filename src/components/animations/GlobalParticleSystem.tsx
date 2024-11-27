@@ -1,122 +1,59 @@
-import React, { useEffect, useRef } from 'react';
-import { useAnimationFrame } from '../../hooks/useAnimationFrame';
-import { Particle, ParticleConfig } from '../../types/particle';
-import { createParticle, updateParticle, drawParticle } from '../../utils/particle';
+import React, { useEffect, useRef, useState } from 'react';
+import { ParticleSystem } from './ParticleSystem';
+import { ParticleConfig } from '../../types/particle';
 
 interface GlobalParticleSystemProps {
   config: ParticleConfig;
+  headerRef: React.RefObject<HTMLDivElement>;
 }
 
-export function GlobalParticleSystem({ config }: GlobalParticleSystemProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const particles = useRef<Particle[]>([]);
-  const isMouseDown = useRef(false);
-  const imageRef = useRef<HTMLImageElement | null>(null);
+export function GlobalParticleSystem({ config, headerRef }: GlobalParticleSystemProps) {
+  const particleSystemRef = useRef<HTMLDivElement | null>(null);
+  const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
-    if (config.shape === 'image' && config.imageUrl) {
-      const img = new Image();
-      img.src = config.imageUrl;
-      img.onload = () => {
-        imageRef.current = img;
-      };
-    }
-  }, [config.imageUrl]);
-
-  const isInteractiveElement = (element: Element | null): boolean => {
-    if (!element) return false;
-    
-    const isControl = element.closest('.controls-area') !== null;
-    const isHeader = element.closest('header') !== null;
-    
-    return isControl || isHeader;
-  };
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!isMouseDown.current) return;
+    const handleMouseDown = (event: MouseEvent) => {
+      const headerRect = headerRef.current?.getBoundingClientRect();
+      const particleSystemRect = particleSystemRef.current?.getBoundingClientRect();
       
-      if (isInteractiveElement(e.target as Element)) return;
+      if (!headerRect || !particleSystemRect) return;
       
-      const x = e.clientX;
-      const y = e.clientY;
-      
-      for (let i = 0; i < 3; i++) {
-        const particle = createParticle(x, y, config);
-        if (config.shape === 'image' && imageRef.current) {
-          particle.image = imageRef.current;
-        }
-        particles.current.push(particle);
+      // Only create particles if click is below header
+      if (event.clientY > headerRect.bottom) {
+        setMousePosition({ x: event.clientX, y: event.clientY });
       }
     };
 
-    const handleMouseDown = (e: MouseEvent) => {
-      if (isInteractiveElement(e.target as Element)) return;
-      isMouseDown.current = true;
+    const handleMouseMove = (event: MouseEvent) => {
+      if (mousePosition) {
+        const headerRect = headerRef.current?.getBoundingClientRect();
+        if (!headerRect) return;
+        
+        // Only create particles if mouse is below header
+        if (event.clientY > headerRect.bottom) {
+          setMousePosition({ x: event.clientX, y: event.clientY });
+        }
+      }
     };
 
     const handleMouseUp = () => {
-      isMouseDown.current = false;
+      setMousePosition(null);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [config]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    return () => {
-      window.removeEventListener('resize', resizeCanvas);
-    };
-  }, []);
-
-  useAnimationFrame(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    particles.current = particles.current
-      .filter((p) => p.life > 0)
-      .map(updateParticle);
-
-    particles.current.forEach((p) => {
-      drawParticle(ctx, p, config.color);
-    });
-  });
+  }, [headerRef, mousePosition]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-auto z-0"
-      style={{ 
-        background: 'transparent',
-        touchAction: 'none',
-        cursor: 'crosshair'
-      }}
-    />
+    <div className="absolute inset-0" ref={particleSystemRef}>
+      <ParticleSystem config={config} />
+    </div>
   );
 }

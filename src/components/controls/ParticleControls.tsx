@@ -21,6 +21,37 @@ export function ParticleControls({ config, onConfigChange }: ParticleControlsPro
 
       <div className="space-y-4">
         <div className="space-y-2">
+          <label className="block text-sm text-gray-300">Shape</label>
+          <select
+            value={config.shape}
+            onChange={(e) => handleChange('shape', e.target.value as ParticleConfig['shape'])}
+            className="w-full bg-gray-800 text-white rounded px-3 py-2 border border-gray-700"
+          >
+            <option value="circle">Circle</option>
+            <option value="square">Square</option>
+            <option value="triangle">Triangle</option>
+            <option value="star">Star</option>
+            <option value="heart">Heart</option>
+            <option value="image">Image</option>
+          </select>
+        </div>
+
+        <div className="space-y-2">
+          <label className="block text-sm text-gray-300">Dispersion Pattern</label>
+          <select
+            value={config.dispersion}
+            onChange={(e) => handleChange('dispersion', e.target.value as ParticleConfig['dispersion'])}
+            className="w-full bg-gray-800 text-white rounded px-3 py-2 border border-gray-700"
+          >
+            <option value="circular">Circular</option>
+            <option value="explosion">Explosion</option>
+            <option value="fountain">Fountain</option>
+            <option value="vortex">Vortex</option>
+            <option value="wave">Wave</option>
+          </select>
+        </div>
+
+        <div className="space-y-2">
           <label className="block text-sm text-gray-300">Particle Count</label>
           <input
             type="range"
@@ -82,6 +113,101 @@ export function ParticleControls({ config, onConfigChange }: ParticleControlsPro
             className="w-full accent-purple-500"
           />
         </div>
+
+        <div className="space-y-2">
+          <label className="block text-sm text-gray-300">Color</label>
+          <input
+            type="color"
+            value={config.color}
+            onChange={(e) => handleChange('color', e.target.value)}
+            className="w-full h-8 rounded"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={config.bounce}
+              onChange={(e) => handleChange('bounce', e.target.checked)}
+              className="accent-purple-500"
+            />
+            <span className="text-sm text-gray-300">Bounce</span>
+          </label>
+
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={config.trail}
+              onChange={(e) => handleChange('trail', e.target.checked)}
+              className="accent-purple-500"
+            />
+            <span className="text-sm text-gray-300">Trail</span>
+          </label>
+
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={config.spin}
+              onChange={(e) => handleChange('spin', e.target.checked)}
+              className="accent-purple-500"
+            />
+            <span className="text-sm text-gray-300">Spin</span>
+          </label>
+
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={config.rainbow}
+              onChange={(e) => handleChange('rainbow', e.target.checked)}
+              className="accent-purple-500"
+            />
+            <span className="text-sm text-gray-300">Rainbow</span>
+          </label>
+
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={config.pulse}
+              onChange={(e) => handleChange('pulse', e.target.checked)}
+              className="accent-purple-500"
+            />
+            <span className="text-sm text-gray-300">Pulse</span>
+          </label>
+
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={config.blur}
+              onChange={(e) => handleChange('blur', e.target.checked)}
+              className="accent-purple-500"
+            />
+            <span className="text-sm text-gray-300">Blur</span>
+          </label>
+
+          <label className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              checked={config.glow}
+              onChange={(e) => handleChange('glow', e.target.checked)}
+              className="accent-purple-500"
+            />
+            <span className="text-sm text-gray-300">Glow</span>
+          </label>
+        </div>
+
+        {config.shape === 'image' && (
+          <div className="space-y-2">
+            <label className="block text-sm text-gray-300">Image URL</label>
+            <input
+              type="text"
+              value={config.imageUrl || ''}
+              onChange={(e) => handleChange('imageUrl', e.target.value)}
+              placeholder="Enter image URL"
+              className="w-full bg-gray-800 text-white rounded px-3 py-2 border border-gray-700"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
