@@ -5,47 +5,24 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
-# Node modules and build output
-node_modules
-dist
-dist-ssr
-*.local
-
-# TypeScript declaration files
-*.d.ts
-
-# Environment files
-.env
-.env.*
-
-# Vite cache
-.vite/
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-
-# OS generated files
-Thumbs.db
-ehthumbs.db
-Desktop.ini
+# Dependency directories
+node_modules/
 
 # Build output
+dist/
 build/
 
-# IDE specific
-*.iml
-*.ipr
-*.iws
+# IDE and editor files
+.vscode/
+*.vscode/
 
-# Bolt folder
-.bolt/
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Vite cache
+vite.config.ts
+
+# Environment variables
+.env
