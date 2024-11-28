@@ -1,66 +1,70 @@
-# AnimationLab-1
+# AnimationLab
 
 ## Overview
-AnimationLab-1 is a web application designed to create and control animations using React, Tailwind CSS, and Lucide React for icons. The application is built with Vite, a build tool that aims to provide a faster and leaner development experience for modern web projects.
+
+AnimationLab is a web application that allows users to create, manage, and share animations. It includes user authentication, a personal dashboard, experiment management, community galleries, and search and filtering functionalities.
 
 ## Features
-- **Animations**: Create and manage particle systems and other animations.
-- **Controls**: Adjust animation parameters through user-friendly controls.
-- **Styling**: Utilizes Tailwind CSS for responsive and modern design.
-- **Icons**: Uses Lucide React for scalable vector icons.
 
-## Setup Instructions
+- **User Authentication:** Users can register and log in with their email.
+- **User Dashboard:** Users can view and manage their saved animations and experiment settings.
+- **Experiment Management:** Users can create animations through experiments and display these animations prominently in their personal dashboard.
+- **Community Galleries:** Users can share their animations in a public gallery with a 'Like' button.
+- **Top and Recent Animations:** Users can view the most liked and recent animations.
+- **Search and Filtering:** Users can search and filter animations based on popularity, recency, or tags.
+- **Responsive Design:** The platform is visually appealing and accessible on both desktop and mobile devices.
+
+## Setup
 
 ### Prerequisites
-- Node.js (version 14 or higher)
-- npm (Node Package Manager)
 
-### Installation
-1. Clone the repository:
+- Node.js and npm installed on your machine.
+- A Firebase project with Realtime Database enabled.
+
+### Steps
+
+1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your-username/AnimationLab-1.git
-   cd AnimationLab-1
+   git clone https://github.com/your-username/AnimationLab.git
+   cd AnimationLab
    ```
 
-2. Install dependencies:
+2. **Install Dependencies:**
    ```bash
    npm install
    ```
 
-### Running the Application
-1. Start the development server:
+3. **Configure Firebase:**
+   - Create a Firebase project in the [Firebase Console](https://console.firebase.google.com/).
+   - Enable the Realtime Database in your Firebase project.
+   - Generate a web API key for your Firebase project.
+   - Create a `.env` file in the root directory of the project and add the following environment variables:
+     ```plaintext
+     VITE_FIREBASE_API_KEY=your-firebase-api-key
+     VITE_FIREBASE_AUTH_DOMAIN=your-firebase-auth-domain
+     VITE_FIREBASE_PROJECT_ID=your-firebase-project-id
+     VITE_FIREBASE_STORAGE_BUCKET=your-firebase-storage-bucket
+     VITE_FIREBASE_MESSAGING_SENDER_ID=your-firebase-messaging-sender-id
+     VITE_FIREBASE_APP_ID=your-firebase-app-id
+     VITE_FIREBASE_MEASUREMENT_ID=your-firebase-measurement-id
+     ```
+
+4. **Run the Development Server:**
    ```bash
    npm run dev
    ```
 
-2. Open your browser and navigate to:
-   ```
-   http://localhost:3000
-   ```
+5. **Access the Application:**
+   - Open your browser and navigate to `http://localhost:3000` (or the port specified in the terminal).
 
-## Project Structure
-- `src/`: Contains the source code of the application.
-  - `components/`: Reusable React components.
-  - `hooks/`: Custom React hooks.
-  - `types/`: TypeScript type definitions.
-  - `utils/`: Utility functions and helpers.
-- `public/`: Public assets.
-- `vite.config.ts`: Vite configuration file.
-- `tailwind.config.js`: Tailwind CSS configuration file.
-- `postcss.config.js`: PostCSS configuration file.
-- `tsconfig.json`: TypeScript configuration file.
-- `package.json`: Project dependencies and scripts.
-- `package-lock.json`: Dependency lock file.
-- `.gitignore`: Specifies files and directories to be ignored by Git.
-- `.bolt/`: Contains design and development guidelines.
+## Deployment
+
+- The application can be deployed to Vercel using the Vercel CLI or by connecting your GitHub repository to Vercel.
 
 ## Contributing
-Contributions are welcome! Please follow these steps to contribute to the project:
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Make your changes and commit them.
-4. Push your changes to your fork.
-5. Create a pull request to the main repository.
+
+- Contributions are welcome! Please fork the repository and submit a pull request with your changes.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+- This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
